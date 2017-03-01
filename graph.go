@@ -8,10 +8,10 @@ import (
 // Graph structure
 type Graph struct {
 	Id       string           `json:"_id,omitempty"`
-	Key      string           `json:"_key"`
+	Key      string           `json:"_key,omitempty"`
 	Name     string           `json:"name"`
 	EdgesDef []EdgeDefinition `json:"edgeDefinitions"`
-	Orphan   []string         `json:"orphanCollections"`
+	Orphan   []string         `json:"orphanCollections,omitempty"`
 	db       *Database
 }
 
@@ -457,12 +457,13 @@ func NewEdgeDefinition(col string, from []string, to []string) *EdgeDefinition {
 }
 
 // Creates graphs
-func (db *Database) CreateGraph(name string, eds []EdgeDefinition) (*Graph, error) {
+func (db *Database) CreateGraph(name string, eds []EdgeDefinition, vertexCollections []string) (*Graph, error) {
 	var g Graph
 	var gr graphResponse
 	if name != "" {
 		g.Name = name
 		g.EdgesDef = eds
+		g.Orphan = vertexCollections
 	} else {
 		return nil, errors.New("Invalid graph name")
 	}
@@ -476,6 +477,8 @@ func (db *Database) CreateGraph(name string, eds []EdgeDefinition) (*Graph, erro
 
 	switch res.Status() {
 	case 201:
+		return &g, nil
+	case 202:
 		return &g, nil
 	case 409:
 		return nil, errors.New("Conflic creating graph")
