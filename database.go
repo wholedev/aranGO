@@ -164,10 +164,11 @@ func (db Database) Col(name string) *Collection {
 				return &col
 			}
 		}
+		/*
 		if db.sess.safe {
 			break
 		}
-
+		*/
 		var col CollectionOptions
 		col.Name = name
 		err = db.CreateCollection(&col)
