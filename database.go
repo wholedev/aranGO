@@ -155,7 +155,7 @@ func (db Database) Col(name string) *Collection {
 	var col Collection
 	var err error
 
-	for i := 0; i < 3; i++ {
+	for i := 0; i < 100; i++ {
 		// need to validate this more
 		for _, c := range db.Collections {
 			if c.Name == name {
